@@ -18,7 +18,7 @@ namespace e_commerce.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<ActionResult> Privacy()
         {
             return View();
         }
