@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Identity
 {
     <div class="navbar-item">Hello @User.Identity?.Name!</div>
     <div class="navbar-item">
-        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
             <button type="submit">Logout</button>
         </form>
+        <a class="navbar-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+            Profile Details
+        </a>
     </div>
 }
 else
