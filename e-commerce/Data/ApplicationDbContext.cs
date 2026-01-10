@@ -11,13 +11,10 @@ public class ApplicationDbContext : IdentityDbContext<User>
         : base(options)
     {
     }
-    /// <summary>
-    ///  Here we register the Entities with database
-    ///  Examples below
-    /// </summary>
-    /// 
-    //public DbSet<HomeFinances.Models.Category> Category { get; set; } = default!;
-    //public DbSet<HomeFinances.Models.Entry> Entry { get; set; } = default!;
+    public DbSet<Product> Products { get; set; } = default!;
+    public DbSet<Category> Categories { get; set; } = default!;
+    public DbSet<Brand> Brands { get; set; } = default!;
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
