@@ -1,0 +1,33 @@
+﻿@model e_commerce.Models.Basket
+
+@if (!Model.Items.Any())
+{
+    <div class="text-center text-muted">Your basket is empty.</div>
+}
+else
+{
+    <table class="table table-sm mb-2">
+        <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>
+                    <form class="basket-update-form d-inline" data-product-id="@item.ProductId">
+                        <input type="number" name="quantity" value="@item.Quantity" min="1" style="width: 50px;" class="form-control form-control-sm d-inline" />
+                        <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                    </form>
+                </td>
+                <td>
+                    <form class="basket-remove-form d-inline" data-product-id="@item.ProductId">
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <form class="basket-clear-form">
+        <button type="submit" class="btn btn-warning w-100">Clear Basket</button>
+    </form>
+}

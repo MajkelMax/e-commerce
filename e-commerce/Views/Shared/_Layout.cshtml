@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - e_commerce</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/e_commerce.styles.css" asp-append-version="true" />
 </head>
@@ -23,9 +24,17 @@
                 </div>
                 <div id="navbarMenu" class="navbar-menu">
                     <div class="navbar-start">
-                        
+                        <a class="navbar-item" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+                        <a class="navbar-item" asp-area="" asp-controller="Brands" asp-action="Index">Brands</a>
+                        <a class="navbar-item" asp-area="" asp-controller="Products" asp-action="Index">Products</a>
+
                     </div>
                     <div class="navbar-end">
+                        <a class="navbar-item" href="#" title="View Basket" data-bs-toggle="modal" data-bs-target="#basketModal" id="basketIcon">
+                            <span class="bi bi-basket" style="font-size: 1.5rem; vertical-align: middle;"></span>
+                            <span class="visually-hidden">Basket</span>
+                        </a>
+
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
@@ -47,5 +56,104 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+        <!-- Basket Modal -->
+        <div class="modal fade" id="basketModal" tabindex="-1" aria-labelledby="basketModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="basketModalLabel">Your Basket</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="basketModalBody">
+                <!-- Basket content will be loaded here via AJAX -->
+                <div class="text-center">
+                  <div class="spinner-border" role="status"></div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <a href="@Url.Action("Index", "Basket")" class="btn btn-primary w-100">Go to Basket</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var basketModal = document.getElementById('basketModal');
+            var modalBody = document.getElementById('basketModalBody');
+
+            function reloadBasketPopup() {
+                fetch('@Url.Action("Popup", "Basket")')
+                    .then(response => response.text())
+                    .then(html => {
+                        modalBody.innerHTML = html;
+                        attachBasketAjaxHandlers();
+                    });
+            }
+
+            function attachBasketAjaxHandlers() {
+                // Update quantity
+                modalBody.querySelectorAll('.basket-update-form').forEach(function (form) {
+                    form.onsubmit = function (e) {
+                        e.preventDefault();
+                        var productId = form.getAttribute('data-product-id');
+                        var quantity = form.querySelector('input[name="quantity"]').value;
+                        fetch('@Url.Action("UpdateAjax", "Basket")', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `productId=${productId}&quantity=${quantity}`
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            modalBody.innerHTML = html;
+                            attachBasketAjaxHandlers();
+                        });
+                    };
+                });
+
+                // Remove item
+                modalBody.querySelectorAll('.basket-remove-form').forEach(function (form) {
+                    form.onsubmit = function (e) {
+                        e.preventDefault();
+                        var productId = form.getAttribute('data-product-id');
+                        fetch('@Url.Action("RemoveAjax", "Basket")', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `productId=${productId}`
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            modalBody.innerHTML = html;
+                            attachBasketAjaxHandlers();
+                        });
+                    };
+                });
+
+                // Clear basket
+                var clearForm = modalBody.querySelector('.basket-clear-form');
+                if (clearForm) {
+                    clearForm.onsubmit = function (e) {
+                        e.preventDefault();
+                        fetch('@Url.Action("ClearAjax", "Basket")', {
+                            method: 'POST'
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            modalBody.innerHTML = html;
+                            attachBasketAjaxHandlers();
+                        });
+                    };
+                }
+            }
+
+            basketModal.addEventListener('show.bs.modal', function () {
+                modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+                reloadBasketPopup();
+            });
+        });
+    </script>
+
+
 </body>
 </html>
