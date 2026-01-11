@@ -1,33 +1,58 @@
 ﻿@model e_commerce.Models.Basket
+@using System.Globalization
 
 @if (!Model.Items.Any())
 {
-    <div class="text-center text-muted">Your basket is empty.</div>
+    <div class="text-center text-muted">Twój koszyk jest pusty.</div>
 }
 else
 {
-    <table class="table table-sm mb-2">
+    <table class="table table-sm mb-2 align-middle">
         <tbody>
-        @foreach (var item in Model.Items)
-        {
-            <tr>
-                <td>@item.Product.Name</td>
-                <td>
-                    <form class="basket-update-form d-inline" data-product-id="@item.ProductId">
-                        <input type="number" name="quantity" value="@item.Quantity" min="1" style="width: 50px;" class="form-control form-control-sm d-inline" />
-                        <button type="submit" class="btn btn-sm btn-primary">Update</button>
-                    </form>
-                </td>
-                <td>
-                    <form class="basket-remove-form d-inline" data-product-id="@item.ProductId">
-                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-                    </form>
-                </td>
-            </tr>
-        }
+            @foreach (var item in Model.Items)
+            {
+                var hasSale = item.Product != null && item.Product.SalePrice > 0 && item.Product.SalePrice < item.Product.Price;
+                <tr>
+                    <td style="width: 50px;">
+                        @if (item.Product != null && !string.IsNullOrEmpty(item.Product.ImageUrl))
+                        {
+                            <img src="@Url.Content(item.Product.ImageUrl)" alt="@item.Product.Name" class="img-thumbnail" style="width: 40px; height: 40px; object-fit: contain;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Brak obrazka</span>
+                        }
+                    </td>
+                    <td>
+                        <span>@(item.Product?.Name ?? "Brak nazwy")</span>
+                    </td>
+                    <td>
+                        @if (hasSale)
+                        {
+                            <span class="fw-bold text-danger">@item.Product.SalePrice.ToString("C", new CultureInfo("pl-PL"))</span>
+                            <span class="text-muted ms-1" style="text-decoration: line-through;">@item.Product.Price.ToString("C", new CultureInfo("pl-PL"))</span>
+                        }
+                        else if (item.Product != null)
+                        {
+                            <span class="fw-bold text-success">@item.Product.Price.ToString("C", new CultureInfo("pl-PL"))</span>
+                        }
+                    </td>
+                    <td>
+                        <form class="basket-update-form d-inline" data-product-id="@item.ProductId">
+                            <input type="number" name="quantity" value="@item.Quantity" min="1" style="width: 50px;" class="form-control form-control-sm d-inline" />
+                            <button type="submit" class="btn btn-sm btn-primary">Aktualizuj</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form class="basket-remove-form d-inline" data-product-id="@item.ProductId">
+                            <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
+                        </form>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
     <form class="basket-clear-form">
-        <button type="submit" class="btn btn-warning w-100">Clear Basket</button>
+        <button type="submit" class="btn btn-warning w-100">Wyczyść koszyk</button>
     </form>
 }

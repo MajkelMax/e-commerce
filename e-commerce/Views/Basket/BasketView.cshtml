@@ -1,23 +1,40 @@
 ﻿@model e_commerce.Models.Basket
+@using System.Globalization
+
 @{
     ViewData["Title"] = "Twój koszyk";
 }
+
 <h2>Twój koszyk</h2>
-<table class="table">
+<table class="table align-middle">
     <thead>
         <tr>
             <th>Produkt</th>
+            <th></th>
             <th>Ilość</th>
             <th>Cena</th>
-            <th>Total</th>
             <th>Razem</th>
+            <th>Usuń</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.Items)
         {
+            var hasSale = item.Product.SalePrice > 0 && item.Product.SalePrice < item.Product.Price;
             <tr>
-                <td>@item.Product.Name</td>
+                <td style="width: 70px;">
+                    @if (!string.IsNullOrEmpty(item.Product.ImageUrl))
+                    {
+                        <img src="@item.Product.ImageUrl" alt="@item.Product.Name" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: contain;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">Brak obrazka</span>
+                    }
+                </td>
+                <td>
+                    <span>@item.Product.Name</span>
+                </td>
                 <td>
                     <form asp-action="Update" asp-controller="Basket" method="post" class="d-inline">
                         <input type="hidden" name="productId" value="@item.ProductId" />
@@ -25,8 +42,34 @@
                         <button type="submit" class="btn btn-sm btn-primary">Update</button>
                     </form>
                 </td>
-                <td>@item.Product.Price.ToString("C")</td>
-                <td>@((item.Product.Price * item.Quantity).ToString("C"))</td>
+                <td>
+                    @if (hasSale)
+                    {
+                        <span class="fw-bold text-danger">@item.Product.SalePrice.ToString("C", new CultureInfo("pl-PL"))</span>
+                        <span class="text-muted ms-1" style="text-decoration: line-through;">@item.Product.Price.ToString("C", new CultureInfo("pl-PL"))</span>
+                    }
+                    else
+                    {
+                        <span class="fw-bold text-success">@item.Product.Price.ToString("C", new CultureInfo("pl-PL"))</span>
+                    }
+                </td>
+                <td>
+                    @if (hasSale)
+                    {
+                        <span class="fw-bold text-danger">
+                            @((item.Product.SalePrice * item.Quantity).ToString("C", new CultureInfo("pl-PL")))
+                        </span>
+                        <span class="text-muted ms-1" style="text-decoration: line-through;">
+                            @((item.Product.Price * item.Quantity).ToString("C", new CultureInfo("pl-PL")))
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="fw-bold text-success">
+                            @((item.Product.Price * item.Quantity).ToString("C", new CultureInfo("pl-PL")))
+                        </span>
+                    }
+                </td>
                 <td>
                     <form asp-action="Remove" asp-controller="Basket" method="post" class="d-inline">
                         <input type="hidden" name="productId" value="@item.ProductId" />
@@ -37,25 +80,40 @@
         }
     </tbody>
 </table>
-@if (TempData["Error"] != null) 
+@if (TempData["Error"] != null)
 {
     <div class="alert alert-danger">
         @TempData["Error"]
     </div>
 }
-@if (TempData["Success"] != null) 
+@if (TempData["Success"] != null)
 {
     <div class="alert alert-success">
         @TempData["Success"]
     </div>
 }
-<form asp-action="ApplyDiscount" asp-controller="Basket" method="post" class="d-inline">
-    <input type="text" name="discountCode" class="form-control d-inline" placeholder="Kod rabatowy" />
-    <button type="submit" class="btn btn-primary">Zastosuj rabat</button> <br />
+
+<form asp-action="ApplyDiscount" asp-controller="Basket" method="post" class="row g-2 align-items-center mb-3">
+    <div class="col-auto">
+        <label for="discountCode" class="visually-hidden">Kod rabatowy</label>
+        <input type="text" name="discountCode" id="discountCode" class="form-control" placeholder="Kod rabatowy" autocomplete="off" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">
+            <span class="bi bi-percent"></span> Zastosuj rabat
+        </button>
+    </div>
 </form>
-<form asp-action="Clear" asp-controller="Basket" method="post" class="d-inline">
-    <button type="submit" class="btn btn-warning">Wyczyść koszyk</button><br />
-</form>
-<form asp-action="SubmitOrder" asp-controller="Basket" method="post" class="d-inline">
-    <button type="submit" class="btn btn-success">Złóż zamówienie</button>
-</form>
+
+<div class="row g-2 mb-3">
+    <div class="col-auto">
+        <form asp-action="Clear" asp-controller="Basket" method="post">
+            <button type="submit" class="btn btn-warning">Wyczyść koszyk</button>
+        </form>
+    </div>
+    <div class="col-auto">
+        <form asp-action="SubmitOrder" asp-controller="Basket" method="post">
+            <button type="submit" class="btn btn-success">Złóż zamówienie</button>
+        </form>
+    </div>
+</div>

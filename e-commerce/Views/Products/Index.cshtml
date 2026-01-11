@@ -1,17 +1,19 @@
 ﻿@model IEnumerable<e_commerce.Models.Product>
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Produkty";
+    var currentSort = ViewData["CurrentSort"]?.ToString() ?? "";
 }
 
-<h1>Produkty w ofercie</h1>
+<h1 class="mb-4">Produkty w ofercie</h1>
 
 <p>
-    <a asp-action="Create">Stwórz nowy produkt</a>
+    <a asp-action="Create" class="btn btn-primary mb-3">Stwórz nowy produkt</a>
 </p>
 
-<!-- Formularz wyszukiwania i sortowania -->
-<div class="row mb-3">
+<!-- Search and sort forms -->
+<div class="row mb-4">
     <div class="col-md-6">
         <form asp-action="Index" method="get">
             <div class="input-group">
@@ -33,208 +35,114 @@
                 <input type="hidden" name="searchString" value="@ViewData["CurrentFilter"]" />
                 <label class="input-group-text" for="sortOrder">Sortuj według:</label>
                 <select class="form-select" name="sortOrder" id="sortOrder" onchange="this.form.submit()">
-                    @{
-                        var currentSort = ViewData["CurrentSort"]?.ToString() ?? "";
-                    }
-                    @if (string.IsNullOrEmpty(currentSort))
-                    {
-                        <option value="" selected>Nazwa (A-Z)</option>
-                    }
-                    else
-                    {
-                        <option value="">Nazwa (A-Z)</option>
-                    }
-                    @if (currentSort == "name_desc")
-                    {
-                        <option value="name_desc" selected>Nazwa (Z-A)</option>
-                    }
-                    else
-                    {
-                        <option value="name_desc">Nazwa (Z-A)</option>
-                    }
-                    @if (currentSort == "price_asc")
-                    {
-                        <option value="price_asc" selected>Cena (rosnąco)</option>
-                    }
-                    else
-                    {
-                        <option value="price_asc">Cena (rosnąco)</option>
-                    }
-                    @if (currentSort == "price_desc")
-                    {
-                        <option value="price_desc" selected>Cena (malejąco)</option>
-                    }
-                    else
-                    {
-                        <option value="price_desc">Cena (malejąco)</option>
-                    }
-                    @if (currentSort == "date_asc")
-                    {
-                        <option value="date_asc" selected>Data dodania (najstarsze)</option>
-                    }
-                    else
-                    {
-                        <option value="date_asc">Data dodania (najstarsze)</option>
-                    }
-                    @if (currentSort == "date_desc")
-                    {
-                        <option value="date_desc" selected>Data dodania (najnowsze)</option>
-                    }
-                    else
-                    {
-                        <option value="date_desc">Data dodania (najnowsze)</option>
-                    }
+                    <option value="" selected="@(string.IsNullOrEmpty(currentSort) ? "selected" : null)">Nazwa (A-Z)</option>
+                    <option value="name_desc" selected="@(currentSort == "name_desc" ? "selected" : null)">Nazwa (Z-A)</option>
+                    <option value="price_asc" selected="@(currentSort == "price_asc" ? "selected" : null)">Cena (rosnąco)</option>
+                    <option value="price_desc" selected="@(currentSort == "price_desc" ? "selected" : null)">Cena (malejąco)</option>
+                    <option value="date_asc" selected="@(currentSort == "date_asc" ? "selected" : null)">Data dodania (najstarsze)</option>
+                    <option value="date_desc" selected="@(currentSort == "date_desc" ? "selected" : null)">Data dodania (najnowsze)</option>
                 </select>
             </div>
         </form>
     </div>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
-                    @Html.DisplayNameFor(model => model.Name)
-                </a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShortDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sku)
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
-                    @Html.DisplayNameFor(model => model.Price)
-                </a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalePrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StockQuantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPublished)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
-                    @Html.DisplayNameFor(model => model.CreatedDate)
-                </a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShortDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sku)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SalePrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StockQuantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPublished)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detale</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
-                    <form asp-controller="Basket" asp-action="Add" method="post" class="d-inline">
-                        <input type="hidden" name="productId" value="@item.Id" />
-                        <input type="number" name="quantity" value="1" min="1" max="@item.StockQuantity" style="width: 60px;" class="form-control d-inline" />
-                        <button type="submit" class="btn btn-sm btn-success">
-                            <span class="bi bi-basket"></span> Dodaj do koszyka
-                        </button>
-                    </form>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-<br></br>
-<h2>Produkty</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
-                    Nazwa produktu
-                </a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
-                    Cena
-                </a>
-            </th>
-            <th>Ilość w magazynie</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var product in Model)
+<!-- Product card grid -->
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var item in Model)
     {
-        <tr>
-            <td>@product.Name</td>
-            <td>@product.Price.ToString("C")</td>
-            <td>@product.StockQuantity</td>
-            <td>
-                <form asp-controller="Basket" asp-action="Add" method="post" class="d-inline">
-                    <input type="hidden" name="productId" value="@product.Id" />
-                    <input type="number" name="quantity" value="1" min="1" max="@product.StockQuantity" style="width: 60px;" class="form-control d-inline" />
-                    <button type="submit" class="btn btn-sm btn-success">
-                        <span class="bi bi-basket"></span> Dodaj do koszyka
-                    </button>
-                </form>
-            </td>
-        </tr>
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                    <div class="ratio ratio-1x1 bg-light d-flex align-items-center justify-content-center" style="overflow: hidden;">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl"
+                                 class="card-img-top img-fluid"
+                                 alt="@item.Name"
+                                 style="object-fit: contain; width: 100%; height: 100%;" />
+                        }
+                        else
+                        {
+                            <div class="d-flex align-items-center justify-content-center w-100 h-100 text-muted">
+                                <span>Brak obrazka</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="px-3 pt-2 pb-0">
+                        <p class="card-text text-muted" style="min-height: 3em;">@item.ShortDescription</p>
+                    </div>
+                    <div class="card-body d-flex flex-column pt-0">
+                        <h5 class="card-title">@item.Name</h5>
+                        <div class="mb-2">
+                            @if (item.SalePrice > 0 && item.SalePrice < item.Price)
+                            {
+                                <span class="fw-bold text-danger" style="font-size: 1.2em;">
+                                    @item.SalePrice.ToString("C", new CultureInfo("pl-PL"))
+                                </span>
+                                <span class="text-muted ms-2" style="text-decoration: line-through;">
+                                    @item.Price.ToString("C", new CultureInfo("pl-PL"))
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="fw-bold text-success" style="font-size: 1.2em;">
+                                    @item.Price.ToString("C", new CultureInfo("pl-PL"))
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </a>
+                <div class="card-body d-flex flex-column pt-0">
+                    <div class="mb-2">
+                        <span class="badge bg-secondary">@item.Category?.Name</span>
+                        @if (item.Brand != null)
+                        {
+                            <span class="badge bg-light text-dark border ms-1">@item.Brand.Name</span>
+                        }
+                    </div>
+                    <div class="mt-auto">
+                        <form asp-controller="Basket" asp-action="Add" method="post" class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="productId" value="@item.Id" />
+                            <input type="number" name="quantity" value="1" min="1" max="@item.StockQuantity" class="form-control form-control-sm" style="width: 70px;" />
+                            <button type="submit" class="btn btn-success btn-sm flex-shrink-0">
+                                <span class="bi bi-basket"></span> Do koszyka
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                    @* <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-link btn-sm p-0">Detale</a> *@
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-link btn-sm p-0">Edytuj</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link btn-sm text-danger p-0">Usuń</a>
+                    }
+                </div>
+            </div>
+        </div>
     }
-    </tbody>
-</table>
+</div>
+
+<style>
+    .card-title {
+        min-height: 2.5em;
+    }
+
+    .ratio.ratio-1x1 {
+        width: 100%;
+        height: 200px;
+        position: relative;
+    }
+
+    .card-img-top.img-fluid {
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+</style>
