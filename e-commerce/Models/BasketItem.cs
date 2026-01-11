@@ -9,15 +9,18 @@ public class BasketItem
     public int Id { get; set; }
 
     [Required]
+    [Display(Name = "Produkt")]
     public int ProductId { get; set; }
 
     [ForeignKey("ProductId")]
     public Product Product { get; set; }
 
     [Required]
+    [Display(Name = "Ilość")]
     public int Quantity { get; set; }
 
     [Required]
+    [Display(Name = "Koszyk")]
     public int BasketId { get; set; }
 
     [ForeignKey("BasketId")]

@@ -33,8 +33,20 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<User>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    if (!await roleManager.RoleExistsAsync("Admin")) await roleManager.CreateAsync(new IdentityRole("Admin"));
+    var users = await userManager.Users.ToListAsync(); if (users.Count == 1)
+    {
+        var firstUser = users.First();
+        if (!await userManager.IsInRoleAsync(firstUser, "Admin"))
+            await userManager.AddToRoleAsync(firstUser, "Admin");
+    }
 }
 
 // Use special middleware to set localization as invariant.
@@ -58,5 +70,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
 
 app.Run();

@@ -45,9 +45,9 @@ namespace e_commerce.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5e933662-bcbe-4da6-83f0-619ff76c340c",
-                            Name = "Adult",
-                            NormalizedName = "ADULT"
+                            Id = "a8c3e0ad-0d9d-432f-9e9b-df267a6a2407",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
                         });
                 });
 
@@ -242,7 +242,7 @@ namespace e_commerce.Migrations
                     b.Property<int?>("BrandId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedDate")
@@ -435,9 +435,7 @@ namespace e_commerce.Migrations
 
                     b.HasOne("e_commerce.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.Navigation("Brand");
 
