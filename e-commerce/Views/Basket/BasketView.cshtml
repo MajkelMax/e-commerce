@@ -77,7 +77,12 @@
                     </form>
                 </td>
             </tr>
+            
         }
+        <tr>
+            <td colspan="4" class="text-end fw-bold">Łącznie:</td>
+            <td colspan="2" class="fw-bold"> @Model.TotalPrice.ToString("C", new CultureInfo("pl-PL")) </td>
+        </tr>
     </tbody>
 </table>
 @if (TempData["Error"] != null)
