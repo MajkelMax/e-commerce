@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace e_commerce.Migrations
 {
     /// <inheritdoc />
-    public partial class testing : Migration
+    public partial class ProductionDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,6 +88,20 @@ namespace e_commerce.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DiscountCodes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Code = table.Column<string>(type: "TEXT", nullable: false),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DiscountCodes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -207,7 +221,7 @@ namespace e_commerce.Migrations
                     ShortDescription = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
                     Sku = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SalePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SalePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     StockQuantity = table.Column<int>(type: "INTEGER", nullable: false),
                     IsPublished = table.Column<bool>(type: "INTEGER", nullable: false),
                     ImageUrl = table.Column<string>(type: "TEXT", maxLength: 1024, nullable: true),
@@ -261,7 +275,7 @@ namespace e_commerce.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "a8c3e0ad-0d9d-432f-9e9b-df267a6a2407", null, "Admin", "ADMIN" });
+                values: new object[] { "1b223665-c3c9-48e2-9427-b5fe5ff39a59", null, "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -341,6 +355,9 @@ namespace e_commerce.Migrations
 
             migrationBuilder.DropTable(
                 name: "BasketItems");
+
+            migrationBuilder.DropTable(
+                name: "DiscountCodes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
