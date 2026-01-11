@@ -5,12 +5,21 @@
     ViewData["Title"] = "Produkty";
     var currentSort = ViewData["CurrentSort"]?.ToString() ?? "";
 }
+@using Microsoft.AspNetCore.Authorization 
+@using Microsoft.AspNetCore.Identity
+@{
+    var isAdmin = User.IsInRole("Admin");
+}
 
 <h1 class="mb-4">Produkty w ofercie</h1>
 
+@if (isAdmin)
+{
 <p>
     <a asp-action="Create" class="btn btn-primary mb-3">Stwórz nowy produkt</a>
 </p>
+}
+
 
 <!-- Search and sort forms -->
 <div class="row mb-4">
