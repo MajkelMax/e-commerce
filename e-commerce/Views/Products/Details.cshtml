@@ -1,95 +1,106 @@
 ﻿@model e_commerce.Models.Product
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Detale produktu";
+    var hasSale = Model.SalePrice > 0 && Model.SalePrice < Model.Price;
 }
 
-<h1>Detale produktu</h1>
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="bg-light ratio ratio-1x1 d-flex align-items-center justify-content-center" style="overflow: hidden; max-width: 400px; margin: auto;">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl"
+                         class="img-fluid"
+                         alt="@Model.Name"
+                         style="object-fit: contain; width: 100%; height: 100%;" />
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-center w-100 h-100 text-muted">
+                        <span>Brak obrazka</span>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-7">
+            <h2 class="mb-2">@Model.Name</h2>
+            <div class="mb-3">
+                @if (hasSale)
+                {
+                    <span class="fw-bold text-danger" style="font-size: 1.8em;">
+                        @Model.SalePrice.ToString("C", new CultureInfo("pl-PL"))
+                    </span>
+                    <span class="text-muted ms-2" style="text-decoration: line-through; font-size: 1.2em;">
+                        @Model.Price.ToString("C", new CultureInfo("pl-PL"))
+                    </span>
+                }
+                else
+                {
+                    <span class="fw-bold text-success" style="font-size: 1.8em;">
+                        @Model.Price.ToString("C", new CultureInfo("pl-PL"))
+                    </span>
+                }
+            </div>
+            <div class="mb-2">
+                <span class="badge bg-secondary">@Model.Category?.Name</span>
+                @if (Model.Brand != null)
+                {
+                    <span class="badge bg-light text-dark border ms-1">@Model.Brand.Name</span>
+                }
+            </div>
+            <div class="mb-2">
+                <span class="text-muted">SKU: @Model.Sku</span>
+                <span class="ms-3">
+                    @if (Model.StockQuantity > 0)
+                    {
+                        <span class="badge bg-success">W magazynie: @Model.StockQuantity</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Brak w magazynie</span>
+                    }
+                </span>
+            </div>
+            <div class="mb-3">
+                <p class="lead">@Model.ShortDescription</p>
+            </div>
+            <div class="mb-4">
+                <h5>Opis produktu</h5>
+                <p>@Model.Description</p>
+            </div>
+            <form asp-controller="Basket" asp-action="Add" method="post" class="d-flex align-items-center gap-2 mb-3">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <input type="number" name="quantity" value="1" min="1" max="@Model.StockQuantity" class="form-control form-control-sm" style="width: 70px;" @(Model.StockQuantity == 0 ? "disabled" : "") />
+                <button type="submit" class="btn btn-success btn-lg flex-shrink-0" @(Model.StockQuantity == 0 ? "disabled" : "")>
+                    <span class="bi bi-basket"></span> Dodaj do koszyka
+                </button>
+            </form>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary me-2">Edytuj</a>
+            }
+            <a asp-action="Index" class="btn btn-link">Wróć do listy produktów</a>
+        </div>
+    </div>
+</div>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ShortDescription)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ShortDescription)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Sku)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Sku)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SalePrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SalePrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StockQuantity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StockQuantity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPublished)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPublished)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Brand)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Brand.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UpdatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UpdatedDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edytuj</a> |
-    <a asp-action="Index">Wróć do listy produktów</a>
-</div>
+<style>
+    .ratio.ratio-1x1 {
+        width: 100%;
+        height: 400px;
+        position: relative;
+        max-width: 400px;
+    }
+
+    .img-fluid {
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+</style>
