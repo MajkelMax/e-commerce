@@ -22,10 +22,55 @@ namespace e_commerce.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string sortOrder)
         {
-            var applicationDbContext = _context.Products.Include(p => p.Brand).Include(p => p.Category);
-            return View(await applicationDbContext.ToListAsync());
+            ViewData["NameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["PriceSortParam"] = sortOrder == "price_asc" ? "price_desc" : "price_asc";
+            ViewData["DateSortParam"] = sortOrder == "date_asc" ? "date_desc" : "date_asc";
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentSort"] = sortOrder;
+
+            var products = from p in _context.Products
+                          .Include(p => p.Brand)
+                          .Include(p => p.Category)
+                          select p;
+
+            // Wyszukiwanie
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p => 
+                    p.Name.Contains(searchString) ||
+                    (p.Description != null && p.Description.Contains(searchString)) ||
+                    (p.ShortDescription != null && p.ShortDescription.Contains(searchString)) ||
+                    p.Sku.Contains(searchString));
+            }
+
+
+            var productsList = await products.ToListAsync();
+            
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    productsList = productsList.OrderByDescending(p => p.Name).ToList();
+                    break;
+                case "price_asc":
+                    productsList = productsList.OrderBy(p => (double)p.Price).ToList();
+                    break;
+                case "price_desc":
+                    productsList = productsList.OrderByDescending(p => (double)p.Price).ToList();
+                    break;
+                case "date_asc":
+                    productsList = productsList.OrderBy(p => p.CreatedDate).ToList();
+                    break;
+                case "date_desc":
+                    productsList = productsList.OrderByDescending(p => p.CreatedDate).ToList();
+                    break;
+                default:
+                    productsList = productsList.OrderBy(p => p.Name).ToList();
+                    break;
+            }
+
+            return View(productsList);
         }
 
         // GET: Products/Details/5
