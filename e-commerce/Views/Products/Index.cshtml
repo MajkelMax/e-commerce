@@ -9,11 +9,94 @@
 <p>
     <a asp-action="Create">Stwórz nowy produkt</a>
 </p>
+
+<!-- Formularz wyszukiwania i sortowania -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form asp-action="Index" method="get">
+            <div class="input-group">
+                <input type="text" class="form-control" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Szukaj produktów..." />
+                <input type="hidden" name="sortOrder" value="@ViewData["CurrentSort"]" />
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search"></i> Szukaj
+                </button>
+                @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                {
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" class="btn btn-secondary">Wyczyść</a>
+                }
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <form asp-action="Index" method="get">
+            <div class="input-group">
+                <input type="hidden" name="searchString" value="@ViewData["CurrentFilter"]" />
+                <label class="input-group-text" for="sortOrder">Sortuj według:</label>
+                <select class="form-select" name="sortOrder" id="sortOrder" onchange="this.form.submit()">
+                    @{
+                        var currentSort = ViewData["CurrentSort"]?.ToString() ?? "";
+                    }
+                    @if (string.IsNullOrEmpty(currentSort))
+                    {
+                        <option value="" selected>Nazwa (A-Z)</option>
+                    }
+                    else
+                    {
+                        <option value="">Nazwa (A-Z)</option>
+                    }
+                    @if (currentSort == "name_desc")
+                    {
+                        <option value="name_desc" selected>Nazwa (Z-A)</option>
+                    }
+                    else
+                    {
+                        <option value="name_desc">Nazwa (Z-A)</option>
+                    }
+                    @if (currentSort == "price_asc")
+                    {
+                        <option value="price_asc" selected>Cena (rosnąco)</option>
+                    }
+                    else
+                    {
+                        <option value="price_asc">Cena (rosnąco)</option>
+                    }
+                    @if (currentSort == "price_desc")
+                    {
+                        <option value="price_desc" selected>Cena (malejąco)</option>
+                    }
+                    else
+                    {
+                        <option value="price_desc">Cena (malejąco)</option>
+                    }
+                    @if (currentSort == "date_asc")
+                    {
+                        <option value="date_asc" selected>Data dodania (najstarsze)</option>
+                    }
+                    else
+                    {
+                        <option value="date_asc">Data dodania (najstarsze)</option>
+                    }
+                    @if (currentSort == "date_desc")
+                    {
+                        <option value="date_desc" selected>Data dodania (najnowsze)</option>
+                    }
+                    else
+                    {
+                        <option value="date_desc">Data dodania (najnowsze)</option>
+                    }
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
+                    @Html.DisplayNameFor(model => model.Name)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
@@ -25,7 +108,9 @@
                 @Html.DisplayNameFor(model => model.Sku)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
+                    @Html.DisplayNameFor(model => model.Price)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SalePrice)
@@ -46,7 +131,9 @@
                 @Html.DisplayNameFor(model => model.Brand)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.UpdatedDate)
@@ -117,8 +204,16 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Nazwa produktu</th>
-            <th>Cena</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
+                    Nazwa produktu
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]" asp-route-searchString="@ViewData["CurrentFilter"]">
+                    Cena
+                </a>
+            </th>
             <th>Ilość w magazynie</th>
             <th></th>
         </tr>
