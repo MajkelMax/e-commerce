@@ -1,6 +1,9 @@
-using System.Diagnostics;
 using e_commerce.Models;
+using e_commerce.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace e_commerce.Controllers
 {

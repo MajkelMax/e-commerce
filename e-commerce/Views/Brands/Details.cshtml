@@ -1,13 +1,12 @@
 ﻿@model e_commerce.Models.Brand
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detale";
 }
 
-<h1>Details</h1>
+<h1>Detale</h1>
 
 <div>
-    <h4>Brand</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -19,6 +18,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edytuj</a> |
+    <a asp-action="Index">Wróc do listy marek</a>
 </div>

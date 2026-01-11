@@ -9,6 +9,7 @@ public class Brand
 
     [Required]
     [MaxLength(100)]
+    [Display(Name = "Nazwa producenta")]
     public string Name { get; set; }
     
     public ICollection<Product> Products { get; set; } = new List<Product>();

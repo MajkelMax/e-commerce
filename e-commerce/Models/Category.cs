@@ -9,9 +9,11 @@ public class Category
 
     [Required]
     [MaxLength(100)]
+    [Display(Name = "Nazwa kategori")]
     public string Name { get; set; }
     
     [MaxLength(100)]
+    [Display(Name = "Krótki opis")]
     public string Slug { get; set; }
     
     public ICollection<Product> Products { get; set; } = new List<Product>();

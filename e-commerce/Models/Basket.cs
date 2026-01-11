@@ -9,7 +9,8 @@ public class Basket
     public int Id { get; set; }
 
     [Required]
+    [Display(Name = "Identyfikator użytkownika")]
     public string UserId { get; set; } = string.Empty;
-
+    [Display(Name = "Elementy koszyka")]
     public ICollection<BasketItem> Items { get; set; } = new List<BasketItem>();
 }

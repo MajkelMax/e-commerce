@@ -1,14 +1,16 @@
 ﻿@model e_commerce.Models.Basket
-
-<h2>Your Basket</h2>
+@{
+    ViewData["Title"] = "Twój koszyk";
+}
+<h2>Twój koszyk</h2>
 <table class="table">
     <thead>
         <tr>
-            <th>Product</th>
-            <th>Qty</th>
-            <th>Price</th>
+            <th>Produkt</th>
+            <th>Ilość</th>
+            <th>Cena</th>
             <th>Total</th>
-            <th></th>
+            <th>Razem</th>
         </tr>
     </thead>
     <tbody>
@@ -28,7 +30,7 @@
                 <td>
                     <form asp-action="Remove" asp-controller="Basket" method="post" class="d-inline">
                         <input type="hidden" name="productId" value="@item.ProductId" />
-                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                        <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
                     </form>
                 </td>
             </tr>
@@ -36,8 +38,8 @@
     </tbody>
 </table>
 <form asp-action="Clear" asp-controller="Basket" method="post" class="d-inline">
-    <button type="submit" class="btn btn-warning">Clear Basket</button>
+    <button type="submit" class="btn btn-warning">Wyczyść koszyk</button>
 </form>
 <form asp-action="SubmitOrder" asp-controller="Basket" method="post" class="d-inline">
-    <button type="submit" class="btn btn-success">Submit Order</button>
+    <button type="submit" class="btn btn-success">Złóż zamówienie</button>
 </form>
