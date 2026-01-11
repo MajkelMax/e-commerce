@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,7 +20,7 @@
                     <span class="bi bi-shop" style="font-size: 2rem; color: #198754; margin-right: 0.5rem;"></span>
                     <span class="fw-bold" style="font-size: 1.5rem;">e-commerce</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Przełącz nawigację">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="mainNavbar">
@@ -42,12 +45,15 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-                        <li class="nav-item me-2">
-                            <a class="nav-link position-relative" href="#" title="Koszyk" data-bs-toggle="modal" data-bs-target="#basketModal" id="basketIcon">
-                                <span class="bi bi-basket" style="font-size: 1.7rem; vertical-align: middle;"></span>
-                                <span class="visually-hidden">Koszyk</span>
-                            </a>
-                        </li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item me-2">
+                                <a class="nav-link position-relative" href="#" title="Koszyk" data-bs-toggle="modal" data-bs-target="#basketModal" id="basketIcon">
+                                    <span class="bi bi-basket" style="font-size: 1.7rem; vertical-align: middle;"></span>
+                                    <span class="visually-hidden">Koszyk</span>
+                                </a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <partial name="_LoginPartial" />
                         </li>
@@ -73,26 +79,24 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
-        <!-- Basket Modal -->
-        <div class="modal fade" id="basketModal" tabindex="-1" aria-labelledby="basketModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-scrollable modal-sm">
+    <div class="modal fade" id="basketModal" tabindex="-1" aria-labelledby="basketModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-md">
             <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="basketModalLabel">Your Basket</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body" id="basketModalBody">
-                <!-- Basket content will be loaded here via AJAX -->
-                <div class="text-center">
-                  <div class="spinner-border" role="status"></div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="basketModalLabel">Your Basket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <a href="@Url.Action("Index", "Basket")" class="btn btn-primary w-100">Go to Basket</a>
-              </div>
+                <div class="modal-body" id="basketModalBody">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="@Url.Action("Index", "Basket")" class="btn btn-primary w-100">Przejdź do koszyka</a>
+                </div>
             </div>
-          </div>
         </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -169,7 +173,6 @@
             });
         });
     </script>
-
 
 </body>
 </html>
