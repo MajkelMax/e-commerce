@@ -1,0 +1,43 @@
+﻿@model e_commerce.Models.Basket
+
+<h2>Your Basket</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>
+                    <form asp-action="Update" asp-controller="Basket" method="post" class="d-inline">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control d-inline" style="width: 80px;" />
+                        <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                    </form>
+                </td>
+                <td>@item.Product.Price.ToString("C")</td>
+                <td>@(item.Product.Price * item.Quantity).ToString("C")</td>
+                <td>
+                    <form asp-action="Remove" asp-controller="Basket" method="post" class="d-inline">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<form asp-action="Clear" asp-controller="Basket" method="post" class="d-inline">
+    <button type="submit" class="btn btn-warning">Clear Basket</button>
+</form>
+<form asp-action="SubmitOrder" asp-controller="Basket" method="post" class="d-inline">
+    <button type="submit" class="btn btn-success">Submit Order</button>
+</form>
