@@ -13,4 +13,8 @@ public class Basket
     public string UserId { get; set; } = string.Empty;
     [Display(Name = "Elementy koszyka")]
     public ICollection<BasketItem> Items { get; set; } = new List<BasketItem>();
+    public decimal TotalPrice => Items.Sum(i => { 
+        if (i.Product.SalePrice != i.Product.Price) return i.Product.SalePrice * i.Quantity; 
+        return i.Product.Price * i.Quantity; 
+    });
 }
