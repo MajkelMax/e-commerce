@@ -22,7 +22,6 @@ public class BasketController : Controller
         _context = context;
         _userManager = userManager;
     }
-
     private async Task<string> GetUserIdAsync() =>
         (await _userManager.GetUserAsync(User))?.Id ?? throw new Exception("User not found");
 
@@ -124,6 +123,38 @@ public class BasketController : Controller
 
         return View("BasketView", basket);
     }
+    [HttpPost]
+    public async Task<IActionResult> ApplyDiscount(string discountCode)
+    {
+        var userId = await GetUserIdAsync();
+        var basket = await _context.Baskets
+            .Include(b => b.Items)
+            .ThenInclude(i => i.Product)
+            .FirstOrDefaultAsync(b => b.UserId == userId);
+        if (string.IsNullOrWhiteSpace(discountCode))
+        { 
+            TempData["Error"] = "Wprowadź kod rabatowy.";
+            return View("BasketView", basket);
+        }
+        
+        var discount = await _context.DiscountCodes.FirstOrDefaultAsync(d => d.Code == discountCode); 
+        if (!discount.IsActive) 
+        { 
+            TempData["Error"] = "Nieprawidłowy lub nieaktywny kod rabatowy.";
+            return View("BasketView", basket);
+        }
+        foreach (var item in basket.Items)
+        {
+            if (item.Product != null)
+            {
+                item.Product.Price = item.Product.SalePrice;
+                _context.Entry(item).State = EntityState.Unchanged;
+            }
+        }
+        TempData["Success"] = $"Kod rabatowy '{discountCode}' został zastosowany.";
+        return View("BasketView", basket);
+    }
+
 
     [HttpPost]
     public async Task<IActionResult> Clear()

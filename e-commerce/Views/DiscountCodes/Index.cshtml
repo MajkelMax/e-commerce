@@ -1,18 +1,22 @@
-﻿@model IEnumerable<e_commerce.Models.Brand>
+﻿@model IEnumerable<e_commerce.Models.DiscountCode>
 
 @{
-    ViewData["Title"] = "Marki";
+    ViewData["Title"] = "Kody Rabatowe";
 }
 
-<h1>Lista marek</h1>
+<h1>Kody Rabatowe</h1>
+
 <p>
-    <a asp-action="Create">Stwórz nową markę</a>
+    <a asp-action="Create">Stwórz kod rabatowy</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
             </th>
             <th></th>
         </tr>
@@ -21,7 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a> |

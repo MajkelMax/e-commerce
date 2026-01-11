@@ -35,7 +35,7 @@ public class Product
     
     [Column(TypeName = "decimal(18,2)")]
     [Display(Name = "Cena promocyjna produktu")]
-    public decimal? SalePrice { get; set; }
+    public decimal SalePrice { get; set; }
     
     [Required]
     [Range(0, int.MaxValue)]

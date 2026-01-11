@@ -35,6 +35,7 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+//Adds the first registered user to role "Admin"
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

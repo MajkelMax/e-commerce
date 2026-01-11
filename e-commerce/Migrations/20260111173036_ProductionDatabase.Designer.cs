@@ -11,8 +11,8 @@ using e_commerce.Data;
 namespace e_commerce.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260111135551_testing")]
-    partial class testing
+    [Migration("20260111173036_ProductionDatabase")]
+    partial class ProductionDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace e_commerce.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a8c3e0ad-0d9d-432f-9e9b-df267a6a2407",
+                            Id = "1b223665-c3c9-48e2-9427-b5fe5ff39a59",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -236,6 +236,24 @@ namespace e_commerce.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("e_commerce.Models.DiscountCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DiscountCodes");
+                });
+
             modelBuilder.Entity("e_commerce.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -269,7 +287,7 @@ namespace e_commerce.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("SalePrice")
+                    b.Property<decimal>("SalePrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ShortDescription")

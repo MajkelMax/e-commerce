@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Brand> Brands { get; set; } = default!;
     public DbSet<Basket> Baskets { get; set; }
     public DbSet<BasketItem> BasketItems { get; set; }
+    public DbSet<DiscountCode> DiscountCodes { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
